@@ -1,0 +1,26 @@
+name: Remove old apks
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+concurrency: 
+  group: "remove-old"
+  cancel-in-progress: true
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Remove all apks but latest 150
+        run: |
+          ls -tr *.apk | head -n -15 | xargs --no-run-if-empty rm 
+      - name: Push archive
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add .
+          git commit --amend -m "Remove old builds" || exit 0   # do not error if nothing to commit
+          git push --force
