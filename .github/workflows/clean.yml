@@ -9,14 +9,17 @@ concurrency:
   group: "clean"
   cancel-in-progress: true
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v6
+
     - name: Run script
-      run: |
-        python3 .github/clean.py
+      run: python3 .github/clean.py
     
     - name: Push archive
       run: |
